@@ -1,0 +1,14 @@
+.navBar {
+    background-color: #C7A987	;
+}
+
+.images{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.buttonDetails {
+    background-color: #C7A987;
+
+}
