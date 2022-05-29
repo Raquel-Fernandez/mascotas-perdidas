@@ -1,37 +1,34 @@
 import "./App.css";
-import MascotasCard from "./components/MascotasCard";
+import React, { useState } from "react";
+import MascotasCard from "./components/Cards/MascotasCard";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
-import {
-  Navbar,
-  Container,
-  Nav,
-} from "react-bootstrap/";
-import "./components/MascotasCard.css";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import "./components/Cards/MascotasCard.css";
+import Login from "./components/login";
+import MascotasDetail from "./components/Details/MascotasDetail";
+import Register from "./components/Register";
+import NavBar from "./components/NavBar/NavBar";
 
 function App() {
-
   document.title = "Mascotas Perdidas";
-  return (
-   
-    <div className="container">
-     
-      <>
-        <Navbar className="navBar" fixed="top" expand="lg">
-          <Container>
-            <Navbar.Brand href="/">Mascotas Perdidas</Navbar.Brand>
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
-            <Navbar.Collapse id="basic-navbar-nav">
-              <Nav className="justify-content-end" style={{ width: "100%" }}>
-                <Nav.Link href="iniciarSesion">Inicia Sesión</Nav.Link>
-                <Nav.Link href="#registro">Regístrate</Nav.Link>
-              </Nav>
-            </Navbar.Collapse>
-          </Container>
-        </Navbar>
-      </>
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    localStorage.getItem("isLoggedIn")
+  );
 
-      <p>Mascotas perdidas</p>
-      <MascotasCard></MascotasCard>
+  return (
+    <div className="container">
+      <Router>
+        <NavBar></NavBar>
+        <Routes>
+          <Route exact path="/" element={<MascotasCard />} />
+          <Route
+            path="/iniciarSesion"
+            element={<Login setIsLoggedIn={setIsLoggedIn} />}
+          />
+          <Route path="/registro" element={<Register />} />
+          <Route path="/detail/:keyword" element={<MascotasDetail />}></Route>
+        </Routes>
+      </Router>
     </div>
   );
 }
