@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "react-bootstrap/";
-import { BrowserRouter as Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import "./ButtonDetail.css";
 
 const ButtonDetail = () => {

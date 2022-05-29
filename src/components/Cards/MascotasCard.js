@@ -1,6 +1,6 @@
 import React from "react";
 import "./MascotasCard.css";
-import { BrowserRouter as Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { Button, Card, Row, Col, Image } from "react-bootstrap/";
 import { useEffect, useState } from "react";
 import mascotasPerdidas from "../../mock/Mascotas";
