@@ -10,8 +10,11 @@ import {
 } from "firebase/storage";
 import { storage } from "../../firebase-config";
 import { v4 } from "uuid";
+import { addDoc, collection } from "firebase/firestore";
+import { db, auth } from "../../firebase-config";
+import { useNavigate } from "react-router-dom";
 
-function NuevaMascota() {
+function NuevaMascota({ isLoggedIn }) {
   const [nombre, setNombre] = useState("");
   const [tipoMascota, setTipoMascota] = useState("");
   const [raza, setRaza] = useState("");
@@ -24,7 +27,6 @@ function NuevaMascota() {
   const [email, setEmail] = useState("");
   const [comentario, setComentario] = useState("");
 
-  const createNuevaMascota = () => {};
   const [selectedFile, setSelectedFile] = useState();
   const [preview, setPreview] = useState();
 
@@ -72,10 +74,36 @@ function NuevaMascota() {
       return;
     }
 
-    // I've kept this example simple by using the first image instead of multiple
     setSelectedFile(e.target.files[0]);
     setImageUpload(e.target.files[0]);
   };
+
+  const postsCollectionRef = collection(db, "mascotas");
+  let navigate = useNavigate();
+
+  const createPost = async (e) => {
+    e.preventDefault();
+    await addDoc(postsCollectionRef, {
+      nombre,
+      tipoMascota,
+      raza,
+      edad,
+      lugar,
+      zona,
+      fechaExtravio,
+      telefono,
+      email,
+      comentario,
+      author: { name: auth.currentUser.displayName, id: auth.currentUser.uid },
+    });
+    navigate("/");
+  };
+
+  useEffect(() => {
+    if (!isLoggedIn) {
+      navigate("/iniciarSesion");
+    }
+  }, []);
   return (
     <Form>
       <Row className="mb-3">
@@ -173,14 +201,10 @@ function NuevaMascota() {
         <Form.Control type="file" onChange={onSelectFile} />
         {selectedFile && <Image src={preview} alt={"Archivo"} fluid />}
       </Form.Group>
-      <Button variant="primary" type="submit" onClick={uploadFile}>
+      <Button variant="primary" type="submit" onClick={createPost}>
         Crear
       </Button>
-      {imageUrls.map((url) => {
-        return <img src={url} />;
-      })}
     </Form>
   );
 }
-
 export default NuevaMascota;

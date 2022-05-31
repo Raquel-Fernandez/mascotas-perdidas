@@ -21,10 +21,10 @@ function App() {
       <Router>
         <NavBar isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn}></NavBar>
         <Routes>
-          <Route exact path="/" element={<MascotasCard />} />
+          <Route exact path="/" element={<MascotasCard isLoggedIn={isLoggedIn}/>} />
           <Route path="/iniciarSesion" element={<Login setIsLoggedIn={setIsLoggedIn} />}/>
           <Route path="/registro" element={<Register />} />
-          <Route path="/nuevaMascota" element={<NuevaMascota />}></Route>
+          <Route path="/nuevaMascota" element={<NuevaMascota isLoggedIn={isLoggedIn}/>}></Route>
           <Route path="/detail/:keyword" element={<MascotasDetail />}></Route>
         </Routes>
       </Router>
