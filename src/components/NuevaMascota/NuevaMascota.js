@@ -53,7 +53,7 @@ function NuevaMascota({ isLoggedIn }) {
         });
       });
     });
-  }, []);
+  }, [imagesListRef]);
 
   useEffect(() => {
     if (!selectedFile) {
@@ -103,7 +103,7 @@ function NuevaMascota({ isLoggedIn }) {
     if (!isLoggedIn) {
       navigate("/iniciarSesion");
     }
-  }, []);
+  }, [isLoggedIn, navigate]);
   return (
     <Form>
       <Row className="mb-3">
