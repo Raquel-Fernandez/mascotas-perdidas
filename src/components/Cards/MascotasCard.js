@@ -5,6 +5,7 @@ import { Button, Card, Row, Col, Image } from "react-bootstrap/";
 import { useEffect, useState } from "react";
 import mascotasPerdidas from "../../mock/Mascotas";
 import { getDocs, collection, deleteDoc, doc } from "firebase/firestore";
+
 import { auth, db } from "../../firebase-config";
 import {
   ref,
@@ -43,6 +44,7 @@ export default function MascotasCard({ isLoggedIn }) {
     const postDoc = doc(db, "mascotas", id);
     await deleteDoc(postDoc);
   };
+  
   useEffect(() => {
     const getPosts = async () => {
       const data = await getDocs(postsCollectionRef);
@@ -50,8 +52,9 @@ export default function MascotasCard({ isLoggedIn }) {
     };
 
     getPosts();
-  }, [deletePost]);
+  }, []);
 
+ 
   return (
     <>
       <Row sm={12}>
