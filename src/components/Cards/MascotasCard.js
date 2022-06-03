@@ -3,18 +3,11 @@ import "./MascotasCard.css";
 import { Link } from "react-router-dom";
 import { Button, Card, Row, Col, Image } from "react-bootstrap/";
 import { useEffect, useState } from "react";
-import mascotasPerdidas from "../../mock/Mascotas";
-
-
 
  
- 
-  export default function MascotasCard() {
-    const [mascotas, setMascotas] = useState([]);
-  
-    useEffect(() => {
-      setMascotas(mascotasPerdidas);
-    }, []);
+  export default function MascotasCard({mascotas}) {
+    
+    console.log(mascotas, "mascotasCard");
   
     return (
       <Row sm={12}>
