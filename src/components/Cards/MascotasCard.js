@@ -4,79 +4,39 @@ import { Link } from "react-router-dom";
 import { Button, Card, Row, Col, Image } from "react-bootstrap/";
 import { useEffect, useState } from "react";
 import mascotasPerdidas from "../../mock/Mascotas";
-import { getDocs, collection, deleteDoc, doc } from "firebase/firestore";
 
-import { auth, db } from "../../firebase-config";
-import {
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  listAll,
-  list,
-} from "firebase/storage";
 
-import { storage } from "../../firebase-config";
-
-export default function MascotasCard({ isLoggedIn }) {
-  const [mascotas, setMascotas] = useState([]);
-  const [imageUrls, setImageUrls] = useState([]);
-
-  const imagesListRef = ref(storage, "images/");
-
-  useEffect(() => {
-    listAll(imagesListRef).then((response) => {
-      response.items.forEach((item) => {
-        getDownloadURL(item).then((url) => {
-          setImageUrls((prev) => [...prev, url]);
-        });
-      });
-    });
-  }, []);
-
-  useEffect(() => {
-    setMascotas(mascotasPerdidas);
-  }, []);
-
-  const [postLists, setPostList] = useState([]);
-  const postsCollectionRef = collection(db, "mascotas");
-
-  const deletePost = async (id) => {
-    const postDoc = doc(db, "mascotas", id);
-    await deleteDoc(postDoc);
-  };
-  
-  useEffect(() => {
-    const getPosts = async () => {
-      const data = await getDocs(postsCollectionRef);
-      setPostList(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-    };
-
-    getPosts();
-  }, []);
 
  
-  return (
-    <>
+ 
+  export default function MascotasCard() {
+    const [mascotas, setMascotas] = useState([]);
+  
+    useEffect(() => {
+      setMascotas(mascotasPerdidas);
+    }, []);
+  
+    return (
       <Row sm={12}>
-        {postLists.map((post) => {
+        {mascotas.map((mascota) => {
           return (
             <Col
               xs={12}
               sm={4}
               style={{ marginTop: "5%", marginBottom: "2%" }}
-              key={post.id}
+              key={mascota.id}
             >
               <Card>
-                <Card.Img as={Image} variant="top" src={post.image} />
+                <Card.Img as={Image} variant="top" src={mascota.image} />
                 <Card.Body>
-                  <Card.Title>{post.nombre}</Card.Title>
+                  <Card.Title>{mascota.name}</Card.Title>
                   <Card.Text>
-                    Mascota perdida en {post.lugar} a fecha de {post.fecha}
+                    Mascota perdida en {mascota.lugar} a fecha de {mascota.fecha}
                   </Card.Text>
                 </Card.Body>
                 <Button
                   as={Link}
-                  to={`/detail/${post.id}`}
+                  to={`/detail/${mascota.id}`}
                   style={{
                     backgroundColor: "#C7A987",
                     border: "#C7A987",
@@ -85,14 +45,10 @@ export default function MascotasCard({ isLoggedIn }) {
                 >
                   Ver más detalles
                 </Button>
-                <div className="deletePost">
-                  {isLoggedIn && post.author.id === auth.currentUser.uid && (
-                    <button
+                <button
                       type="button"
                       class="btn btn-outline-danger"
-                      onClick={() => {
-                        deletePost(post.id);
-                      }}
+                     
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
@@ -110,17 +66,10 @@ export default function MascotasCard({ isLoggedIn }) {
                       </svg>
                       Eliminar
                     </button>
-                  )}
-                </div>
               </Card>
             </Col>
           );
         })}
       </Row>
-
-      <Link to="/nuevaMascota" className="addPets">
-        +
-      </Link>
-    </>
-  );
-}
+    );
+  }
