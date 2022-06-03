@@ -23,6 +23,9 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
         {isLoggedIn ? (
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="justify-content-end" style={{ width: "100%" }}>
+            <Nav.Link as={Link} to="/myPosts" eventKey="/myPosts">
+                Mis publicaciones
+              </Nav.Link>
               <Nav.Link as={Link} to="/logout" eventKey="/logout" onClick={userSingOut}>
                 Cerrar Sesión
               </Nav.Link>
@@ -31,6 +34,9 @@ function NavBar({ isLoggedIn, setIsLoggedIn }) {
         ) : (
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav className="justify-content-end" style={{ width: "100%" }}>
+            <Nav.Link as={Link} to="/myPosts" eventKey="/myPosts">
+                Mis publicaciones
+              </Nav.Link>
               <Nav.Link as={Link} to="/iniciarSesion" eventKey="/iniciarSesion">
                 Inicia Sesión
               </Nav.Link>

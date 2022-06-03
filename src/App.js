@@ -9,6 +9,7 @@ import MascotasDetail from "./components/Details/MascotasDetail";
 import Register from "./components/Register";
 import NavBar from "./components/NavBar/NavBar";
 import NuevaMascota from "./components/NuevaMascota/NuevaMascota";
+import MyPost from "./components/MyPosts/MyPost";
 
 function App() {
   document.title = "Mascotas Perdidas";
@@ -26,6 +27,7 @@ function App() {
           <Route path="/registro" element={<Register />} />
           <Route path="/nuevaMascota" element={<NuevaMascota isLoggedIn={isLoggedIn}/>}></Route>
           <Route path="/detail/:keyword" element={<MascotasDetail />}></Route>
+          <Route path="/myPosts" element={<MyPost />}></Route>
         </Routes>
       </Router>
     </div>
