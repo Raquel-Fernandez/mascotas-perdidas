@@ -32,7 +32,7 @@ function NuevaMascota({ isLoggedIn }) {
 
   const [imageUpload, setImageUpload] = useState(null);
   const [imageUrls, setImageUrls] = useState([]);
-
+  const [validated, setValidated] = useState(false);
   const imagesListRef = ref(storage, "images/");
   const uploadFile = (e) => {
     e.preventDefault();
@@ -81,6 +81,21 @@ function NuevaMascota({ isLoggedIn }) {
   const postsCollectionRef = collection(db, "mascotas");
   let navigate = useNavigate();
 
+
+  const handleSubmit = (event) => {
+    const form = event.currentTarget;
+    if (form.checkValidity() === false) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
+
+    setValidated(true);
+
+    createPost()
+  };
+
+
+
   const createPost = async (e) => {
     e.preventDefault();
     await addDoc(postsCollectionRef, {
@@ -99,20 +114,22 @@ function NuevaMascota({ isLoggedIn }) {
     navigate("/");
   };
 
-  useEffect(() => {
-    if (!isLoggedIn) {
-      navigate("/iniciarSesion");
-    }
-  }, [isLoggedIn, navigate]);
+  
   return (
-    <Form>
+    <Form noValidate validated={validated} onSubmit={handleSubmit}>
       <Row className="mb-3">
         <Form.Group as={Col} controlId="formGridAddress1">
           <Form.Label>Nombre</Form.Label>
           <Form.Control
+          required
+          type="text"
             placeholder="Nombre de la mascota"
             onChange={(event) => setNombre(event.target.value)}
+            
           />
+           <Form.Control.Feedback type="invalid">
+              Introduce el nombre de tu mascota
+            </Form.Control.Feedback>
         </Form.Group>
 
         <Form.Group as={Col} controlId="formGridAddress2">
@@ -120,7 +137,11 @@ function NuevaMascota({ isLoggedIn }) {
           <Form.Control
             placeholder="Tipo de mascota"
             onChange={(event) => setTipoMascota(event.target.value)}
+          required
           />
+          <Form.Control.Feedback type="invalid">
+              Introduce el tipo de mascota (Perro, gato, pájaro...)
+            </Form.Control.Feedback>
         </Form.Group>
       </Row>
 
@@ -152,7 +173,11 @@ function NuevaMascota({ isLoggedIn }) {
           <Form.Control
             placeholder="Nombre de la mascota"
             onChange={(event) => setLugar(event.target.value)}
+            required
           />
+          <Form.Control.Feedback type="invalid">
+              Introduce el lugar
+            </Form.Control.Feedback>
         </Form.Group>
         <Form.Group as={Col} controlId="formGridAddress5">
           <Form.Label>Zona</Form.Label>
@@ -164,9 +189,14 @@ function NuevaMascota({ isLoggedIn }) {
         <Form.Group as={Col} controlId="formGridAddress6">
           <Form.Label>Fecha de extravío</Form.Label>
           <Form.Control
-            placeholder="Tipo de mascota"
+          type="date"
+            placeholder="Fecha de extravío"
+            required
             onChange={(event) => setFechaExtravio(event.target.value)}
           />
+          <Form.Control.Feedback type="invalid">
+          Introduce una fecha
+        </Form.Control.Feedback>
         </Form.Group>
       </Row>
 
@@ -174,14 +204,20 @@ function NuevaMascota({ isLoggedIn }) {
         <Form.Group as={Col} controlId="formGridAddress7">
           <Form.Label>Teléfono</Form.Label>
           <Form.Control
+          type="number"
             placeholder="Teléfono de contacto"
             onChange={(event) => setTelefono(event.target.value)}
+            required
           />
+          <Form.Control.Feedback type="invalid">
+              Introduce el teléfono de contacto
+            </Form.Control.Feedback>
         </Form.Group>
 
         <Form.Group as={Col} controlId="formGridAddress8">
           <Form.Label>E-mail</Form.Label>
           <Form.Control
+          type="email"
             placeholder="Correo electrónico"
             onChange={(event) => setEmail(event.target.value)}
           />
@@ -201,7 +237,7 @@ function NuevaMascota({ isLoggedIn }) {
         <Form.Control type="file" onChange={onSelectFile} />
         {selectedFile && <Image src={preview} alt={"Archivo"} fluid />}
       </Form.Group>
-      <Button variant="primary" type="submit" onClick={createPost}>
+      <Button variant="primary" type="submit">
         Crear
       </Button>
     </Form>
