@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
     console.log(mascotas, "mascotasCard");
   
     return (
+      <>
       <Row sm={12}>
         {mascotas.map((mascota) => {
           return (
@@ -64,5 +65,9 @@ import { useEffect, useState } from "react";
           );
         })}
       </Row>
+      <Link to="/nuevaMascota" className="addPets">
+      +
+    </Link>
+    </>
     );
   }
