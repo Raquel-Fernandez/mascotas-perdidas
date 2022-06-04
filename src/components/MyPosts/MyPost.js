@@ -64,7 +64,7 @@ console.log(filtered, "filterred");
   return(
 
     <div>
-      <MascotasCard mascotas={mascotas} loading={loading} />
+      <MascotasCard mascotas={mascotas} loading={loading} isLoggedIn = {isLoggedIn} setMascotas={setMascotas}/>
     </div>
   )
 

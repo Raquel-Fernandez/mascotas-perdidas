@@ -18,21 +18,21 @@ function NuevaMascota({ isLoggedIn }) {
   const [nombre, setNombre] = useState("");
   const [tipoMascota, setTipoMascota] = useState("");
   const [raza, setRaza] = useState("");
-  const [sexo, setSexo] = useState();
+  const [sexo, setSexo] = useState("");
   const [edad, setEdad] = useState("");
-  const [lugar, setLugar] = useState();
+  const [lugar, setLugar] = useState("");
   const [zona, setZona] = useState("");
-  const [fechaExtravio, setFechaExtravio] = useState([]);
-  const [telefono, setTelefono] = useState();
+  const [fechaExtravio, setFechaExtravio] = useState("");
+  const [telefono, setTelefono] = useState("");
   const [email, setEmail] = useState("");
   const [comentario, setComentario] = useState("");
 
-  const [selectedFile, setSelectedFile] = useState();
-  const [preview, setPreview] = useState();
+  const [selectedFile, setSelectedFile] = useState("");
+  const [preview, setPreview] = useState("");
   const [imageUpload, setImageUpload] = useState(null);
   const [imageUrls, setImageUrls] = useState([]);
-
-  const imagesListRef = ref(storage, "images/");
+ const [validated, setValidated] = useState(false);
+   const imagesListRef = ref(storage, "images/");
   
 
   const [imageURL, setImageURL] = useState("")
@@ -40,35 +40,46 @@ function NuevaMascota({ isLoggedIn }) {
   const postsCollectionRef = collection(db, "mascotas");
   let navigate = useNavigate();
 
+
+ 
+  
   const createPost = async (e) => {
-    
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    setValidated(true);
+
     e.preventDefault();
 
     if (imageUpload == null) return;
     const imageRef = ref(storage, `images/${imageUpload.name + v4()}`);
     uploadBytes(imageRef, imageUpload).then((snapshot) => {
       getDownloadURL(snapshot.ref).then((url) => {
-        
+        console.log("la url es", url)
+        addDoc(postsCollectionRef, {
+          nombre,
+          tipoMascota,
+          raza,
+          edad,
+          lugar,
+          zona,
+          fechaExtravio,
+          telefono,
+          email,
+          comentario,
+          author: { name: auth.currentUser.displayName, id: auth.currentUser.uid },
+          url: url
+        });
         setImageUrls((prev) => [...prev, url]);
       });
 
-      setImageURL(storage.getDownloadURL())
     });
 
 
-    await addDoc(postsCollectionRef, {
-      nombre,
-      tipoMascota,
-      raza,
-      edad,
-      lugar,
-      zona,
-      fechaExtravio,
-      telefono,
-      email,
-      comentario,
-      author: { name: auth.currentUser.displayName, id: auth.currentUser.uid },
-      imageURL   });
+    
     navigate("/");
   };
 
@@ -77,15 +88,27 @@ function NuevaMascota({ isLoggedIn }) {
       navigate("/iniciarSesion");
     }
   }, [isLoggedIn, navigate]);
+  
+ 
+
+
+
+  
   return (
-    <Form>
+    <Form noValidate validated={validated} onSubmit={createPost}>
       <Row className="mb-3">
         <Form.Group as={Col} controlId="formGridAddress1">
           <Form.Label>Nombre</Form.Label>
           <Form.Control
+          required
+          type="text"
             placeholder="Nombre de la mascota"
             onChange={(event) => setNombre(event.target.value)}
+            
           />
+           <Form.Control.Feedback type="invalid">
+              Introduce el nombre de tu mascota
+            </Form.Control.Feedback>
         </Form.Group>
 
         <Form.Group as={Col} controlId="formGridAddress2">
@@ -93,7 +116,11 @@ function NuevaMascota({ isLoggedIn }) {
           <Form.Control
             placeholder="Tipo de mascota"
             onChange={(event) => setTipoMascota(event.target.value)}
+          required
           />
+          <Form.Control.Feedback type="invalid">
+              Introduce el tipo de mascota (Perro, gato, pájaro...)
+            </Form.Control.Feedback>
         </Form.Group>
       </Row>
 
@@ -125,7 +152,11 @@ function NuevaMascota({ isLoggedIn }) {
           <Form.Control
             placeholder="Nombre de la mascota"
             onChange={(event) => setLugar(event.target.value)}
+            required
           />
+          <Form.Control.Feedback type="invalid">
+              Introduce el lugar
+            </Form.Control.Feedback>
         </Form.Group>
         <Form.Group as={Col} controlId="formGridAddress5">
           <Form.Label>Zona</Form.Label>
@@ -137,9 +168,14 @@ function NuevaMascota({ isLoggedIn }) {
         <Form.Group as={Col} controlId="formGridAddress6">
           <Form.Label>Fecha de extravío</Form.Label>
           <Form.Control
-            placeholder="Tipo de mascota"
+          type="date"
+            placeholder="Fecha de extravío"
+            required
             onChange={(event) => setFechaExtravio(event.target.value)}
           />
+          <Form.Control.Feedback type="invalid">
+          Introduce una fecha
+        </Form.Control.Feedback>
         </Form.Group>
       </Row>
 
@@ -147,14 +183,20 @@ function NuevaMascota({ isLoggedIn }) {
         <Form.Group as={Col} controlId="formGridAddress7">
           <Form.Label>Teléfono</Form.Label>
           <Form.Control
+          type="number"
             placeholder="Teléfono de contacto"
             onChange={(event) => setTelefono(event.target.value)}
+            required
           />
+          <Form.Control.Feedback type="invalid">
+              Introduce el teléfono de contacto
+            </Form.Control.Feedback>
         </Form.Group>
 
         <Form.Group as={Col} controlId="formGridAddress8">
           <Form.Label>E-mail</Form.Label>
           <Form.Control
+          type="email"
             placeholder="Correo electrónico"
             onChange={(event) => setEmail(event.target.value)}
           />
@@ -176,7 +218,7 @@ function NuevaMascota({ isLoggedIn }) {
         }} />
         {selectedFile && <Image src={preview} alt={"Archivo"} fluid />}
       </Form.Group>
-      <Button variant="primary" type="submit" onClick={createPost}>
+      <Button variant="primary" type="submit">
         Crear
       </Button>
     </Form>

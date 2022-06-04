@@ -39,7 +39,7 @@ useEffect(() => {
     <Container>
       <Row>
         <Col md={6} style={{ marginTop: "2%", marginBottom: "2%" }}>
-          <Image fluid alt="Perro1"  />
+          <Image fluid alt="Perro1" src={mascota.url} />
         </Col>
         <Col md={6} style={{ marginTop: "2%", marginBottom: "2%" }}>
           {mascota.nombre}

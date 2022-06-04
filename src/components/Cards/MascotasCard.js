@@ -19,26 +19,19 @@ import { storage } from "../../firebase-config";
 
 export default function MascotasCard({ isLoggedIn, mascotas, setMascotas, loading }) {
 
+  const [isLoading, setIsLoading] = useState(loading)
   console.log(mascotas, "mascotasCargadas")
 
   const postsCollectionRef = collection(db, "mascotas");
   const deletePost = async (id) => {
     const postDoc = doc(db, "mascotas", id);
     await deleteDoc(postDoc);
+    const data = await getDocs(postsCollectionRef);
+    setMascotas(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    console.log("holaaaaaaaaa")
   };
-  /*useEffect(() => {
-    const getPosts = async () => {
-      const data = await getDocs(postsCollectionRef);
-      setMascotas(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
-      loading=false
-    };
-    if(loading) {
-    getPosts();
-  }
-    
-  }, [deletePost]);
 
- */
+ 
   
  
 
@@ -54,8 +47,8 @@ export default function MascotasCard({ isLoggedIn, mascotas, setMascotas, loadin
               style={{ marginTop: "5%", marginBottom: "2%" }}
               key={post.id}
             >
-              <Card>
-                <Card.Img as={Image} variant="top" src={post.image} />
+              <Card class="card h-100">
+                <Card.Img as={Image} variant="top" src={post.url} />
                 <Card.Body>
                   <Card.Title>{post.nombre}</Card.Title>
                   <Card.Text>
