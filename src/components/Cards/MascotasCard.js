@@ -17,48 +17,36 @@ import {
 
 import { storage } from "../../firebase-config";
 
-export default function MascotasCard({ isLoggedIn }) {
-  const [mascotas, setMascotas] = useState([]);
-  const [imageUrls, setImageUrls] = useState([]);
+export default function MascotasCard({ isLoggedIn, mascotas, setMascotas, loading }) {
 
-  const imagesListRef = ref(storage, "images/");
+  console.log(mascotas, "mascotasCargadas")
 
-  useEffect(() => {
-    listAll(imagesListRef).then((response) => {
-      response.items.forEach((item) => {
-        getDownloadURL(item).then((url) => {
-          setImageUrls((prev) => [...prev, url]);
-        });
-      });
-    });
-  }, []);
-
-  useEffect(() => {
-    setMascotas(mascotasPerdidas);
-  }, []);
-
-  const [postLists, setPostList] = useState([]);
   const postsCollectionRef = collection(db, "mascotas");
-
   const deletePost = async (id) => {
     const postDoc = doc(db, "mascotas", id);
     await deleteDoc(postDoc);
   };
-  
-  useEffect(() => {
+  /*useEffect(() => {
     const getPosts = async () => {
       const data = await getDocs(postsCollectionRef);
-      setPostList(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      setMascotas(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      loading=false
     };
-
+    if(loading) {
     getPosts();
-  }, []);
+  }
+    
+  }, [deletePost]);
+
+ */
+  
+ 
 
  
   return (
     <>
       <Row sm={12}>
-        {postLists.map((post) => {
+        {mascotas.map((post) => {
           return (
             <Col
               xs={12}

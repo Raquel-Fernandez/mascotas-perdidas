@@ -29,60 +29,33 @@ function NuevaMascota({ isLoggedIn }) {
 
   const [selectedFile, setSelectedFile] = useState();
   const [preview, setPreview] = useState();
-
   const [imageUpload, setImageUpload] = useState(null);
   const [imageUrls, setImageUrls] = useState([]);
 
   const imagesListRef = ref(storage, "images/");
-  const uploadFile = (e) => {
-    e.preventDefault();
-    if (imageUpload == null) return;
-    const imageRef = ref(storage, `images/${imageUpload.name + v4()}`);
-    uploadBytes(imageRef, imageUpload).then((snapshot) => {
-      getDownloadURL(snapshot.ref).then((url) => {
-        setImageUrls((prev) => [...prev, url]);
-      });
-    });
-  };
+  
 
-  useEffect(() => {
-    listAll(imagesListRef).then((response) => {
-      response.items.forEach((item) => {
-        getDownloadURL(item).then((url) => {
-          setImageUrls((prev) => [...prev, url]);
-        });
-      });
-    });
-  }, [imagesListRef]);
-
-  useEffect(() => {
-    if (!selectedFile) {
-      setPreview(undefined);
-      return;
-    }
-
-    const objectUrl = URL.createObjectURL(selectedFile);
-    setPreview(objectUrl);
-
-    // free memory when ever this component is unmounted
-    return () => URL.revokeObjectURL(objectUrl);
-  }, [selectedFile]);
-
-  const onSelectFile = (e) => {
-    if (!e.target.files || e.target.files.length === 0) {
-      setSelectedFile(undefined);
-      return;
-    }
-
-    setSelectedFile(e.target.files[0]);
-    setImageUpload(e.target.files[0]);
-  };
+  const [imageURL, setImageURL] = useState("")
 
   const postsCollectionRef = collection(db, "mascotas");
   let navigate = useNavigate();
 
   const createPost = async (e) => {
+    
     e.preventDefault();
+
+    if (imageUpload == null) return;
+    const imageRef = ref(storage, `images/${imageUpload.name + v4()}`);
+    uploadBytes(imageRef, imageUpload).then((snapshot) => {
+      getDownloadURL(snapshot.ref).then((url) => {
+        
+        setImageUrls((prev) => [...prev, url]);
+      });
+
+      setImageURL(storage.getDownloadURL())
+    });
+
+
     await addDoc(postsCollectionRef, {
       nombre,
       tipoMascota,
@@ -95,7 +68,7 @@ function NuevaMascota({ isLoggedIn }) {
       email,
       comentario,
       author: { name: auth.currentUser.displayName, id: auth.currentUser.uid },
-    });
+      imageURL   });
     navigate("/");
   };
 
@@ -198,7 +171,9 @@ function NuevaMascota({ isLoggedIn }) {
       </Form.Group>
       <Form.Group controlId="formFile" className="mb-3">
         <Form.Label>Seleccionar archivo</Form.Label>
-        <Form.Control type="file" onChange={onSelectFile} />
+        <Form.Control type="file" onChange={(event) => {
+          setImageUpload(event.target.files[0]);
+        }} />
         {selectedFile && <Image src={preview} alt={"Archivo"} fluid />}
       </Form.Group>
       <Button variant="primary" type="submit" onClick={createPost}>
