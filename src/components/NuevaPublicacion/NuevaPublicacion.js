@@ -203,7 +203,6 @@ function NuevaPublicacion({ isLoggedIn }) {
             as="select"
             value={sexo}
             onChange={(e) => {
-              console.log("e.target.value", e.target.value);
               setSexo(e.target.value);
             }}
           >
