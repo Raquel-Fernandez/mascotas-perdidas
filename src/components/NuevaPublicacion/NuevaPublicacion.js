@@ -2,11 +2,7 @@ import React, { useEffect } from "react";
 import { Form, Button, Col, Row, Image, Toast } from "react-bootstrap/";
 import { useState } from "react";
 
-import {
-  ref,
-  uploadBytes,
-  getDownloadURL,
-} from "firebase/storage";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../../firebase-config";
 import { v4 } from "uuid";
 import { addDoc, collection } from "firebase/firestore";
@@ -37,9 +33,9 @@ function NuevaPublicacion({ isLoggedIn }) {
   const postsCollectionRef = collection(db, "mascotas");
   let navigate = useNavigate();
 
-  const [timestap, setTimestap] = useState(Date.now());
+  const [timeNow, setTimeNow] = useState(Date.now());
   const [show, setShow] = useState(false);
-  
+
   let today = new Date().toLocaleDateString();
   today = today.replaceAll("/", "-");
 
@@ -47,9 +43,8 @@ function NuevaPublicacion({ isLoggedIn }) {
     const [day, month, year] = d.split("-");
     return new Date(year, month - 1, day);
   };
-  
-  const createPost = async (e) => {
 
+  const createPost = async (e) => {
     const form = e.currentTarget;
     e.preventDefault();
     e.stopPropagation();
@@ -79,7 +74,7 @@ function NuevaPublicacion({ isLoggedIn }) {
             id: auth.currentUser.uid,
           },
           url: url,
-          timestap,
+          timeNow,
         });
         setImageUrls((prev) => [...prev, url]);
       });
@@ -208,6 +203,7 @@ function NuevaPublicacion({ isLoggedIn }) {
             as="select"
             value={sexo}
             onChange={(e) => {
+              console.log("e.target.value", e.target.value);
               setSexo(e.target.value);
             }}
           >
