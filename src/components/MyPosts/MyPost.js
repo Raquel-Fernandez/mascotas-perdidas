@@ -1,73 +1,44 @@
 import React, { useState, useEffect } from 'react'
 import MascotasCard from '../Cards/MascotasCard'
-import { collection, onSnapshot, query, getDoc } from 'firebase/firestore';
-import { getDocs, deleteDoc, doc } from "firebase/firestore";
+import { collection, query, getDocs } from 'firebase/firestore';
 import { auth, db } from "../../firebase-config";
-import {
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  listAll,
-  list,
-} from "firebase/storage";
-import {  where } from "firebase/firestore";
-import { AuthErrorCodes } from 'firebase/auth';
+import { useNavigate } from "react-router-dom";
+import { orderBy } from "firebase/firestore";
 
 
 function MyPost({ isLoggedIn }) {
-  console.log("Estoy en my post")
- 
-  
-  const [mascotasList, setMascotasList] = useState([]);
+
+  let navigate = useNavigate();
+
   const [mascotas, setMascotas] = useState([]);
   const [loading, setLoading] = useState(true);
 
- 
-
-
-  const postsCollectionRef = collection(db, "mascotas");
-
+  const postsCollectionRef = collection(db, "mascotas")
+  const postsOrdered = query(postsCollectionRef, orderBy("timeNow", "desc"));
+    
   const getPosts = async () => {
-    const data = await getDocs(postsCollectionRef);
-    const pepe = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
-    console.log(pepe[0].author.id, "pepe")
+    const data = await getDocs(postsOrdered);
+    const dataList = data.docs.map((doc) => ({ ...doc.data(), id: doc.id }))
   
-    let filtered = pepe.filter(row => row.author.id == auth.currentUser.uid);
-    setMascotas(filtered)
-console.log(filtered, "filterred");
+    let myData = dataList.filter(row => row.author.id == auth.currentUser.uid);
+    setMascotas(myData)
   };
   
-
- 
   useEffect(() => {
-    
-
-
-
-
     getPosts()
   }, []);
-  /*
+
   useEffect(() => {
-  
-
-    const pepe = mascotasList.filter((mascotaList) =>{ return mascotaList.author.id === auth.currentUser.uid })
-   
-    console.log(pepe, "mascotasList")
-    debugger
-    setMascotas(pepe);
-    getPosts();
-  }, [mascotasList]);
- */
-
+    if (!isLoggedIn) {
+      navigate("/iniciarSesion");
+    }
+  }, [isLoggedIn, navigate]);
 
   return(
-
     <div>
       <MascotasCard mascotas={mascotas} loading={loading} isLoggedIn = {isLoggedIn} setMascotas={setMascotas}/>
     </div>
   )
-
 }
 
 export default MyPost

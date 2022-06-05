@@ -1,0 +1,9 @@
+@font-face {
+    font-family: "myFirstFont";
+    src: url("../../fonts/puppybellies.medium.ttf");
+}
+
+.harlow{
+    font-family: myFirstFont;
+    font-size: 30px;
+}
